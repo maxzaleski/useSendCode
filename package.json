@@ -1,5 +1,5 @@
 {
-  "name": "use-send-code",
+  "name": "@mzaleski/use-send-code",
   "version": "1.0.0",
   "description": "A React (NextJS-oriented) hook that facilitates operations such as sending one-time codes.",
   "main": "dist/index.js",
@@ -39,6 +39,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-test-renderer": "^18.2.0",
+    "react-testing-library": "^8.0.1",
     "ts-jest": "^29.0.3",
     "typescript": "^4.7.4"
   },

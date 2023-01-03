@@ -124,6 +124,7 @@ The hook returns an object with the following properties:
 | Name | Type | Description |
 | --- | --- | --- |
 sendCode | Function | The function responsible for calling the worker and updating the internal state |
+reset | Function | Will reset the hook to a `"READY"` state; this same function is called once the cooldown has expired |
 status | String | The current status of the hook; it can be one of the following: `"READY"`, `"COOLDOWN"`, `"SENDING"`, `"RESTORING"` |
 buttonProps | Object | The props that should be passed to the button component; affected by `buttonPropsActiveLabel`, `buttonPropsLoadingPropName` |
 
@@ -154,4 +155,4 @@ You will find a collection of typings bundled with the package.
 
 ## License
 
-[MIT License](LICENSE) (c) 2022 Maximilien Zaleski
+[MIT License](LICENSE) (c) 2022 Maximilien **Zaleski**

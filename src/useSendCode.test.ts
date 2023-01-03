@@ -1,6 +1,7 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { EUseSendCodeStatus } from './index';
-import { useSendCode } from './';
+import { useSendCode } from '.';
+import { InvalidLastCodeSentAtError, parseLastCodeSentAt } from './useSendCode';
 
 const commonProps = {
   iamIdentifier: 'this-is-a-test-iam',
@@ -127,21 +128,22 @@ describe('restoring existing session', () => {
     expect(opts.sessionClearHandler).toBeCalledTimes(1);
   });
 
-  it('should throw error on invalid `lastCodeSendAt`', () => {
-    renderHook(() => {
-      try {
-        useSendCode(fn, {
-          ...commonProps,
-          lastCodeIdentifier: commonProps.iamIdentifier,
-          lastCodeSentAt: 'invalid-date',
-        });
-        expect(true).toBe(false);
-      } catch (err: unknown) {
-        expect((err as Error).message).toBe(
-          '[useSendCode] Invalid `lastCodeSentAt` value, expected parse-able date'
-        );
-      }
-    });
+  it('should throw error on invalid `lastCodeSendAt`', async () => {
+    expect(() => parseLastCodeSentAt('invalid')).toThrow(
+      InvalidLastCodeSentAtError
+    );
+  });
+
+  it('should parse a valid `lastCodeSendAt` (ISO string)', () => {
+    expect(() =>
+      parseLastCodeSentAt(new Date().toISOString())
+    ).not.toThrowError(InvalidLastCodeSentAtError);
+  });
+
+  it('should parse a valid `lastCodeSendAt` (number)', () => {
+    expect(() => parseLastCodeSentAt(new Date().getTime())).not.toThrowError(
+      InvalidLastCodeSentAtError
+    );
   });
 });
 
@@ -248,14 +250,12 @@ describe('sending code', () => {
     expect(fn).toBeCalledTimes(1);
   });
 
-  it('should re-throw `sendCode` error', async () => {
-    const fn = jest.fn(() => {
+  it('should return `sendCode` error', async () => {
+    const fn = jest.fn(async () => {
       throw new Error('Test');
     });
     const { result } = renderHook(() => useSendCode(fn, commonProps));
-    await expect(
-      act(async () => result.current.sendCode() as Promise<void>)
-    ).rejects.toThrow('Test');
+    expect(await result.current.sendCode()).toEqual('Test');
   });
 });
 
