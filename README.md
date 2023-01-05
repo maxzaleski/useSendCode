@@ -152,4 +152,4 @@ You will find a collection of typings bundled with the package.
 
 ## License
 
-[MIT License](LICENSE) (c) 2022 Maximilien **Zaleski**
+[MIT License](LICENSE) (c) 2022 Maximilien Zaleski
