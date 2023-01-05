@@ -46,8 +46,6 @@ export interface IUseSendCodeButtonProps extends Record<string, any> {
 
 /** IUseSendCodeState represents the hook's exported state. */
 export interface IUseSendCodeState {
-  /** An error if encountered. */
-  error: string | null;
   /** The current status. */
   status: EUseSendCodeStatus;
   /** Component properties of the user-facing CTA. */
@@ -273,7 +271,7 @@ export class InvalidLastCodeSentAtError extends Error {
 }
 
 /**
- * parseLastCodeSentAt is a utility function that will attempt to parse the given date-input.
+ * parseLastCodeSentAt is a utility function that will attempt to parse the given date input.
  *
  * @returns the parsed date.
  *
