@@ -58,11 +58,11 @@ import { useSendCode } from '@mzaleski/use-send-code';
 
 async function worker(iamIdentifier: string): Promise<void> { ... }
 
-function Page(props) {
+function AccountRecoveryPage({ cookiePayload }) {
   const { sendCode, status, buttonProps } = useSendCode(worker, {
     iamIdentifier: 'some-id',
-    lastCodeIdentifier: props.cookiePayload?.iamIdentifier,
-    lastCodeSendAt: props.cookiePayload?.sentAt,
+    lastCodeIdentifier: cookiePayload?.iamIdentifier,
+    lastCodeSendAt: cookiePayload?.sentAt,
     callOnMount: true,
     cooldownPeriod: 2 * 60,
     buttonPropsActiveLabel: 'Recover my account',
@@ -73,32 +73,28 @@ function Page(props) {
   });
 
   const sendRecoveryCode = async () => {
-    try {
-      // You may wish to include additional logic here
-      await sendCode();
-    } catch (err: any) {
+    const err = await sendCode();
+    if (err) {
       // handle error
-      console.error(err);
     }
   };
 
   return (
-    <button {...buttonProps} onClick={sendRecoveryCode}>
-      {buttonProps.label}
-    </button>
+    <Button {...buttonProps} onClick={sendRecoveryCode} />
   );
 }
 
 export async function getServerSideProps(context) {
+  /** retrieve server-only cookie and deserialise it */
+  const cookiePayload = {...};
+
   return {
     props: {
-      cookiePayload: /** retrieve server-only cookie and deserialise it */,
+      cookiePayload,
     },
   };
 }
 ```
-
-An interactive example can be found on [Stackblitz](https://stackblitz.com/edit/nextjs-qlxy3n?file=README.md).
 
 ### Configuration
 
@@ -110,7 +106,7 @@ iamIdentifier | String | The current user's unique identifier | [required] |
 sessionClearHandler | Function | A function responsible for clearing the server-only cookie | [required] |
 sessionPersistHandler | Function | - A function responsible for creating the server-only cookie; it is given the `iamIdentifier` as parameter - The signature encourages the return of a server timestamp | [required] |
 lastCodeIdentifier? | String | [retrieved from server-only cookie] the last code's `iamIdentifier` | `undefined` |
-lastCodeSendAt? | String | [retrieved from server-only cookie] when the last code was sent; it will be parsed by the Javascript `Date` class | `undefined` |
+lastCodeSendAt? | String, Number | [retrieved from server-only cookie] when the last code was sent; it will be parsed by the Javascript `Date` class. If the input is unparsable, the hook will throw `InvalidLastCodeSentAtError` | `undefined` |
 callOnMount? | Boolean | Whether to call the worker on component mount | `false` |
 cooldownPeriod? | Number | The cooldown period in seconds | `300` (5 minutes) |
 buttonPropsActiveLabel? | String | The button's label when a new code is available | `"Send me a new code"` |
