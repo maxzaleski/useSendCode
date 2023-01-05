@@ -55,6 +55,7 @@ Example usage with NextJS' `getServerSideProps`:
 
 ```tsx
 import { useSendCode } from '@mzaleski/use-send-code';
+import { Button } from 'src/components';
 
 async function worker(iamIdentifier: string): Promise<void> { ... }
 
